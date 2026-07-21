@@ -1,0 +1,3 @@
+Place the downloaded Firebase Admin SDK service-account JSON here as
+`service-account.json` (gitignored — never commit it). See FirebaseConfig.java
+and app.firebase.credentials-path in application.yml.

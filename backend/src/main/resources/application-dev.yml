@@ -1,0 +1,14 @@
+# Local development — `docker compose up -d postgres redis` then run the app
+# directly on the host (mvn spring-boot:run), talking to localhost services.
+
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        highlight_sql: true
+
+logging:
+  level:
+    com.umurinzi.emergency: DEBUG
+    org.hibernate.SQL: DEBUG

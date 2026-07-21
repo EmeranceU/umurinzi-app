@@ -1,0 +1,54 @@
+# --- Root / general ---
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+!.vscode/extensions.json
+*.iml
+
+# Claude Code runtime lock files (session-local, not project config)
+.claude/*.lock
+
+# --- Backend (Maven / Java) ---
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+backend/**/*.class
+backend/src/main/resources/firebase/*.json
+!backend/src/main/resources/firebase/.gitkeep
+
+# --- Frontend (React Native / Node) ---
+mobile/node_modules/
+mobile/npm-debug.log*
+mobile/yarn-debug.log*
+mobile/yarn-error.log*
+mobile/.expo/
+mobile/dist/
+mobile/web-build/
+
+# Android
+mobile/android/app/build/
+mobile/android/build/
+mobile/android/.gradle/
+mobile/android/local.properties
+mobile/android/app/release/
+mobile/android/keystores/*.jks
+mobile/android/keystores/*.keystore
+mobile/**/*.hprof
+
+# iOS
+mobile/ios/build/
+mobile/ios/Pods/
+mobile/ios/*.xcworkspace/xcuserdata/
+mobile/ios/*.xcodeproj/xcuserdata/
+mobile/ios/*.xcodeproj/project.xcworkspace/xcuserdata/
+
+# React Native / Metro
+mobile/.metro-health-check*
+*.jsbundle
+
+# --- Docker ---
+docker/volumes/

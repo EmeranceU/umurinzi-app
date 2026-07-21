@@ -1,0 +1,17 @@
+# Production. All secrets and connection details must come from real environment
+# variables / a secrets manager (SDD §6) — nothing here should ever be a literal
+# credential; the defaults in application.yml exist only for local dev convenience.
+
+spring:
+  jpa:
+    show-sql: false
+
+management:
+  endpoint:
+    health:
+      show-details: never
+
+logging:
+  level:
+    root: WARN
+    com.umurinzi.emergency: INFO

@@ -1,0 +1,95 @@
+name: umurinzi
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: umurinzi-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-umurinzi}
+      POSTGRES_USER: ${POSTGRES_USER:-umurinzi}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-umurinzi} -d ${POSTGRES_DB:-umurinzi}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - umurinzi-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: umurinzi-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - umurinzi-net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: umurinzi-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-docker}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-umurinzi}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-umurinzi}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-change-me}
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      JWT_SECRET: ${JWT_SECRET:-change-me-to-a-long-random-base64-secret}
+      JWT_ACCESS_TOKEN_TTL_MINUTES: ${JWT_ACCESS_TOKEN_TTL_MINUTES:-15}
+      JWT_REFRESH_TOKEN_TTL_DAYS: ${JWT_REFRESH_TOKEN_TTL_DAYS:-30}
+      FIREBASE_CREDENTIALS_PATH: ${FIREBASE_CREDENTIALS_PATH:-classpath:firebase/service-account.json}
+      SMS_PROVIDER: ${SMS_PROVIDER:-africas_talking}
+      AFRICAS_TALKING_API_KEY: ${AFRICAS_TALKING_API_KEY:-}
+      AFRICAS_TALKING_USERNAME: ${AFRICAS_TALKING_USERNAME:-}
+      AFRICAS_TALKING_SENDER_ID: ${AFRICAS_TALKING_SENDER_ID:-UMURINZI}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID:-}
+      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN:-}
+      TWILIO_FROM_NUMBER: ${TWILIO_FROM_NUMBER:-}
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    networks:
+      - umurinzi-net
+
+  pgadmin:
+    image: dpage/pgadmin4:8
+    container_name: umurinzi-pgadmin
+    restart: unless-stopped
+    profiles: ["tools"]
+    depends_on:
+      - postgres
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@umurinzi.local}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-change-me}
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - umurinzi-net
+
+networks:
+  umurinzi-net:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  redis-data:

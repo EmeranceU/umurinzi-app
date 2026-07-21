@@ -1,0 +1,12 @@
+# Used when the backend itself runs inside docker-compose (SPRING_PROFILES_ACTIVE=docker).
+# Connection details come entirely from the environment variables docker-compose.yml
+# injects (SPRING_DATASOURCE_URL, SPRING_DATA_REDIS_HOST, ...) via Spring's relaxed
+# env-var binding — nothing profile-specific to override here yet beyond logging.
+
+spring:
+  jpa:
+    show-sql: false
+
+logging:
+  level:
+    com.umurinzi.emergency: INFO

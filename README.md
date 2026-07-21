@@ -1,0 +1,39 @@
+# Umurinzi Emergency Safety Alert System
+
+Arduino Nano 33 BLE Sense Rev2 emergency button → React Native mobile app → Spring Boot backend → PostgreSQL → Emergency Contacts / Helpers.
+
+Full design is in **[docs/SDD.md](docs/SDD.md)** — architecture, ERD, folder structures, API spec, and the implementation plan this scaffold follows. This repository currently contains **Phase 0 scaffolding only**: project structure, build tooling, database schema, and Docker Compose. No business logic (auth flow, emergency workflow, BLE handling, etc.) is implemented yet — see the SDD's Phase 1 onward.
+
+## Repository layout
+
+```
+umurinzi-app/
+├─ backend/    Spring Boot 3 / Java 25 API (see backend/README.md)
+├─ mobile/     React Native / TypeScript app (see mobile/README.md)
+├─ docs/       Software Design Document
+└─ docker-compose.yml   Postgres + Redis + backend (+ optional pgAdmin)
+```
+
+## Running the backend stack locally
+
+```bash
+cp .env.example .env   # then fill in real secrets
+docker compose up -d postgres redis
+cd backend && mvn spring-boot:run   # or: docker compose up -d backend
+```
+
+Once the backend is up:
+
+- Swagger UI: http://localhost:8080/swagger-ui.html
+- OpenAPI JSON: http://localhost:8080/v3/api-docs
+- Health check: http://localhost:8080/actuator/health
+
+Optional pgAdmin: `docker compose --profile tools up -d pgadmin` → http://localhost:5050
+
+## Running the mobile app
+
+See [mobile/README.md](mobile/README.md) — the native `android/` and `ios/` projects are generated via the React Native CLI, not hand-scaffolded in this repo.
+
+## Status
+
+Phase 0 (this scaffold) is approved. Next: Phase 1 — Backend Auth & Security (`auth`, `role`, `user` modules, JWT issuance/refresh, RBAC). See `docs/SDD.md` §7.
