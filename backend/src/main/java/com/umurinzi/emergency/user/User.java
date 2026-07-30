@@ -28,7 +28,11 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Table(name = "users")
 public class User extends BaseEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    // EAGER, deliberately: Role is a 3-row reference table, and every authenticated
+    // request reads it (UserPrincipal.getAuthorities()) outside of any open Hibernate
+    // session (open-in-view: false) — LAZY here throws LazyInitializationException in
+    // JwtAuthenticationFilter, which runs before any @Transactional boundary.
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 

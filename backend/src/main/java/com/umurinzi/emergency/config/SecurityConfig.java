@@ -1,5 +1,8 @@
 package com.umurinzi.emergency.config;
 
+import com.umurinzi.emergency.security.jwt.JwtAuthenticationFilter;
+import com.umurinzi.emergency.security.jwt.JwtTokenProvider;
+import com.umurinzi.emergency.user.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -8,19 +11,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
- * Baseline security chain for a stateless JWT API (SDD §6).
- *
- * <p><b>Phase 0 scope only:</b> this wires the shape of the chain — stateless sessions,
- * CSRF off (not needed for a token-based API), and the public/permitted paths every
- * later module will rely on (Swagger, actuator health, and the {@code /auth/**} and
- * {@code /public/**} endpoints once they exist). It does <b>not</b> yet register a JWT
- * authentication filter or any role-based ({@code @PreAuthorize}) rules — those land in
- * Phase 1 alongside the {@code auth}/{@code security.jwt} packages. Until then every
- * non-permitted endpoint requires a Spring Security principal that nothing in this
- * codebase can yet produce, which is the intended, honest state for a scaffold: routes
- * are not accidentally left wide open.
+ * Stateless JWT security chain (SDD §6). {@code /auth/**} and {@code /public/**} stay
+ * open; every other endpoint requires a valid access token, authenticated by {@link
+ * JwtAuthenticationFilter} (Phase 1). Role-based ({@code @PreAuthorize}/{@code
+ * @RequireRole}) rules land module-by-module as each module's endpoints do, per SDD §6
+ * RBAC — this chain only establishes *who* the caller is, not what they're allowed to
+ * do once authenticated.
  */
 @Configuration
 @EnableWebSecurity
@@ -37,16 +36,21 @@ public class SecurityConfig {
     };
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthenticationFilter)
+            throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC_PATHS).permitAll()
-                        .anyRequest().authenticated());
-        // TODO (Phase 1): register JwtAuthenticationFilter before
-        // UsernamePasswordAuthenticationFilter, and layer @PreAuthorize/@RequireRole
-        // checks per SDD §6 RBAC.
+                        .anyRequest().authenticated())
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
+    }
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter(
+            JwtTokenProvider jwtTokenProvider, UserRepository userRepository) {
+        return new JwtAuthenticationFilter(jwtTokenProvider, userRepository);
     }
 
     @Bean

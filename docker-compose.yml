@@ -67,7 +67,12 @@ services:
       TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN:-}
       TWILIO_FROM_NUMBER: ${TWILIO_FROM_NUMBER:-}
     ports:
-      - "${BACKEND_PORT:-8080}:8080"
+      # Published as 8090 by default, not 8080 — some dev machines already have
+      # something else bound to 8080 (e.g. a local Apache/XAMPP install), which
+      # silently intercepts requests routed via `adb reverse` even though `curl
+      # localhost:8080` from the host still reaches this container fine. Container
+      # itself still listens on 8080 internally; only the host-side mapping moved.
+      - "${BACKEND_PORT:-8090}:8080"
     networks:
       - umurinzi-net
 
