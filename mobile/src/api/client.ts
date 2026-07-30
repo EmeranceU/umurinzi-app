@@ -1,11 +1,8 @@
 import axios from 'axios';
 import { API_BASE_URL } from '@/constants/config';
+import { attachInterceptors } from '@/api/interceptors';
 
-/**
- * Shared Axios instance every feature's `*Api.ts` module builds on. JWT attachment
- * and refresh-on-401 (SDD §1.3, §4 `api/interceptors.ts`) are Phase 1 work — they
- * need a working auth module to attach/refresh against, which doesn't exist yet.
- */
+/** Shared Axios instance every feature's `*Api.ts` module builds on (SDD §4). */
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
   timeout: 15000,
@@ -13,3 +10,5 @@ export const apiClient = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+attachInterceptors(apiClient);

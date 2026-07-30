@@ -2,11 +2,11 @@
 
 Spring Boot 3.5 / Java 25 API. See [`../docs/SDD.md`](../docs/SDD.md) for the full design — this README only covers running what's scaffolded so far.
 
-## Status: Phase 0 scaffolding
+## Status
 
-What exists: build config, package structure for every module in SDD §3, JPA entities + Spring Data repositories matching the ERD (§2), Flyway migrations V1–V5 reproducing the schema's documented version history, security/Swagger/CORS/Redis/Firebase/WebSocket config wiring, and Docker packaging.
+Phase 0 scaffolding (build config, package structure, JPA entities/repositories matching the ERD, Flyway migrations V1–V5, security/Swagger/CORS/Redis/Firebase/WebSocket config, Docker packaging) plus a working **Phase 1 Auth module**: `POST /auth/register`, `/login`, `/refresh`, `/logout`, JWT issuance/validation, and a protected `GET /users/me` proving the whole chain end-to-end.
 
-What does **not** exist yet: any controller, service, or business logic (auth flows, the emergency state machine, notification dispatch, BLE device registration, etc.). Those land starting Phase 1 — see `docs/SDD.md` §7. Package-level Javadoc (`package-info.java`) in the not-yet-implemented packages notes which phase owns them.
+Everything else (Contact/Device/Emergency/Location/Notification/Helper Response/Admin business logic) is still not implemented — package-level Javadoc (`package-info.java`) in those packages notes which phase owns them (`docs/SDD.md` §7).
 
 ## Running locally
 
@@ -28,6 +28,11 @@ The app reads `SPRING_PROFILES_ACTIVE` (defaults to `dev`, which points at `loca
 ```bash
 docker compose -f ../docker-compose.yml up -d --build
 ```
+
+Published on **8090**, not 8080 (see the comment in `../docker-compose.yml` — some dev machines already have something else bound to 8080):
+
+- Swagger UI: http://localhost:8090/swagger-ui.html
+- Health: http://localhost:8090/actuator/health
 
 ## Tests
 

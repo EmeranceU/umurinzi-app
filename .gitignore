@@ -38,6 +38,11 @@ mobile/android/app/release/
 mobile/android/keystores/*.jks
 mobile/android/keystores/*.keystore
 mobile/**/*.hprof
+mobile/android/**/.cxx/
+mobile/android/**/build/
+mobile/android/.idea/
+mobile/android/**/*.iml
+mobile/android/captures/
 
 # iOS
 mobile/ios/build/
