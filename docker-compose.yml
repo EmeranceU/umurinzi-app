@@ -66,6 +66,10 @@ services:
       TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID:-}
       TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN:-}
       TWILIO_FROM_NUMBER: ${TWILIO_FROM_NUMBER:-}
+      APP_UPLOAD_DIR: /app/uploads
+      APP_UPLOAD_PUBLIC_BASE_URL: ${APP_UPLOAD_PUBLIC_BASE_URL:-http://localhost:8090}
+    volumes:
+      - backend-uploads:/app/uploads
     ports:
       # Published as 8090 by default, not 8080 — some dev machines already have
       # something else bound to 8080 (e.g. a local Apache/XAMPP install), which
@@ -98,3 +102,4 @@ networks:
 volumes:
   postgres-data:
   redis-data:
+  backend-uploads:

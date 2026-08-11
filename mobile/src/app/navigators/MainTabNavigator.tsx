@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { HomeScreen } from '@/features/home/screens/HomeScreen';
 import { ContactsListScreen } from '@/features/contacts/screens/ContactsListScreen';
 import { EmergencyHistoryScreen } from '@/features/history/screens/EmergencyHistoryScreen';
-import { ProfileScreen } from '@/features/profile/screens/ProfileScreen';
+import { ProfileStack } from '@/app/navigators/ProfileStack';
 import { HelperDashboardScreen } from '@/features/helper/screens/HelperDashboardScreen';
 import { useIsHelper } from '@/features/home/hooks/useIsHelper';
 
@@ -27,7 +27,7 @@ export function MainTabNavigator() {
       <Tab.Screen name="Contacts" component={ContactsListScreen} />
       <Tab.Screen name="History" component={EmergencyHistoryScreen} />
       {isHelper && <Tab.Screen name="Helper" component={HelperDashboardScreen} />}
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Profile" component={ProfileStack} />
     </Tab.Navigator>
   );
 }
