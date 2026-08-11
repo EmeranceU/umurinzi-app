@@ -19,6 +19,7 @@ backend/.mvn/wrapper/maven-wrapper.jar
 backend/**/*.class
 backend/src/main/resources/firebase/*.json
 !backend/src/main/resources/firebase/.gitkeep
+backend/uploads/
 
 # --- Frontend (React Native / Node) ---
 mobile/node_modules/
