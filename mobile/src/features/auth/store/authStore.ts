@@ -5,7 +5,11 @@ export type AuthUser = {
   fullName: string;
   email: string;
   phoneNumber: string;
+  profilePhotoUrl: string | null;
+  medicalNotes: string | null;
+  preferredLanguage: string | null;
   alertMode: 'SILENT' | 'AUDIBLE';
+  silenceOtherHelpersOnAccept: boolean;
   role: string;
 };
 

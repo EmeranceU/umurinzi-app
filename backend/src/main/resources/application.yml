@@ -6,7 +6,7 @@ spring:
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/umurinzi}
     username: ${SPRING_DATASOURCE_USERNAME:umurinzi}
-    password: ${SPRING_DATASOURCE_PASSWORD:change-me}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
   jpa:
     open-in-view: false
     hibernate:
@@ -55,6 +55,9 @@ app:
     secret: ${JWT_SECRET:change-me-to-a-long-random-base64-secret}
     access-token-ttl-minutes: ${JWT_ACCESS_TOKEN_TTL_MINUTES:15}
     refresh-token-ttl-days: ${JWT_REFRESH_TOKEN_TTL_DAYS:30}
+  upload:
+    dir: ${APP_UPLOAD_DIR:./uploads}
+    public-base-url: ${APP_UPLOAD_PUBLIC_BASE_URL:http://localhost:8090}
   sms:
     provider: ${SMS_PROVIDER:africas_talking}
     africas-talking:
