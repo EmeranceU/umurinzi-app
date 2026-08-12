@@ -42,14 +42,6 @@ export function attachInterceptors(client: AxiosInstance): void {
   client.interceptors.response.use(
     response => response,
     async error => {
-      // TEMP DEBUG — remove once the registration network issue is diagnosed.
-      console.error('[api] request failed', {
-        url: error.config?.url,
-        baseURL: error.config?.baseURL,
-        message: error.message,
-        code: error.code,
-        status: error.response?.status,
-      });
       const original = error.config;
       // Spring Security's default here is 403 Forbidden for a missing/invalid/expired
       // token (no custom AuthenticationEntryPoint configured to make it 401) — treat
